@@ -18,25 +18,39 @@ export default class SortingWeigets extends React.Component{
     resetArray(){
         const array = [];
 
-        for(let i =0; i<300; i++){
-            array.push(randomIntForminterval(5, 500));
+        for(let i =0; i<10; i++){
+            array.push(randomIntFormInterval(5, 500));  
         }
         this.setState({array});
     }
 
     mergeSort(){
         const animations = sortingAlgos.mergeSort(this.state.array);
-        for(let i = 0; i< animations.length; i++){
-            const {comparison , swap} = animations[i];
-            setTimeout(() => {
-                const arrayBars = document.getElementsByClassName("array-bar");
-                arrayBars[comparison[1]].style.backgroundColor = "red";     
-                arrayBars[comparison[0]].style.backgroundColor = "red";
+        const newAnimations = [];
+        for (const animation of animations){
+            newAnimations.push(animation.comparison);
+            newAnimations.push(animation.comparison);
+            newAnimations.push(animation.swap);
+        }
+        for (let i = 0; i< newAnimations.length; i++){
+            const arrayBars = document.getElementsByClassName("array-bar");
+            const isColorChange = i % 3 !== 2;
+            if(isColorChange){
+                const [barOneIdx, barTwoIdx] = newAnimations[i];
+                const barOneStyle = arrayBars[barOneIdx].style;
+                const barTwoStyle = arrayBars[barTwoIdx].style;
+                const color = i % 3 === 0 ? "red" : "turquoise";
                 setTimeout(() => {
-                    // arrayBars[comparison[1]].style.backgroundColor = "turquoise";
-                    // arrayBars[comparison[0]].style.backgroundColor = "turquoise";
-                }, (i + 1) * 10);
-            }, i * 10);
+                    barOneStyle.backgroundColor = color;
+                    barTwoStyle.backgroundColor = color;
+                }, i * 10);
+            }else{
+                setTimeout(() => {
+                    const [barOneIdx, newHeight] = newAnimations[i];
+                    const barOneStyle = arrayBars[barOneIdx].style;
+                    barOneStyle.height = `${newHeight}px`;
+                }, i * 10);
+            }
         }
     }
 
@@ -54,8 +68,8 @@ export default class SortingWeigets extends React.Component{
     testSortingAlgorithm(){
         for(let i = 0; i< 100; i++){
             const array = [];
-            for(let i = 0; i < randomIntForminterval(1, 1000); i++ ){
-                array.push(randomIntForminterval(-1000, 1000));
+            for(let i = 0; i < randomIntFormInterval(1, 1000); i++ ){   
+                array.push(randomIntFormInterval(-1000, 1000)); 
             }
             const javaScriptSortedArray = array.slice().sort((a,b) => a-b);
             const margeSortedArray = sortingAlgos.mergeSort(array.slice());
@@ -85,7 +99,7 @@ export default class SortingWeigets extends React.Component{
     }
 }
 
-function randomIntForminterval(min, max){
+function randomIntFormInterval(min, max){   
     return Math.floor(Math.random() * (max - min +1) + min);
 };
 
